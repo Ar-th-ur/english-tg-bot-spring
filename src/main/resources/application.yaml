@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/melli
+    username: postgres
+    password: 11122006Pl
+
+telegram:
+  bot:
+    token: 6178740074:AAHRj6xs-gtaKdh4Z4n6AzWBVm9fqJm3nXQ
+    username: english_educationn_bot
