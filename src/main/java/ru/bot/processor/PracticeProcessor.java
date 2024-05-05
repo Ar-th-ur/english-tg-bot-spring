@@ -25,9 +25,9 @@ public class PracticeProcessor {
         var chatId = message.getChatId();
         if (message.getText().equals("/stop_practice")) {
             var msg = messageUtils.getMessage("command.stop_practice");
-            var username = message.getFrom().getUserName();
+            var telegramId = message.getFrom().getId();
 
-            var user = userService.findByUsername(username);
+            var user = userService.findByTelegramId(telegramId);
             user.setState(State.COMMAND);
             userService.save(user);
 
@@ -39,15 +39,15 @@ public class PracticeProcessor {
     }
 
     private void assessAnswer(Message message) {
-        var username = message.getFrom().getUserName();
+        var telegramId = message.getFrom().getId();
         var userAnswer = message.getText();
         var chatId = message.getChatId();
 
-        var exercise = userService.findByUsername(username).getExercise();
+        var exercise = userService.findByTelegramId(telegramId).getExercise();
         if (userAnswer.equalsIgnoreCase(exercise.getAnswer())) {
             var msg = messageUtils.getMessage("practice.correct_answer");
             bot.answer(msg, chatId);
-            sendExercise(username, chatId);
+            sendExercise(telegramId, chatId);
             return;
         }
 
@@ -60,7 +60,7 @@ public class PracticeProcessor {
     }
 
     public void sendExerciseWithAnswerButton(Exercise exercise, Long chatId) {
-        var message = exercise.getSentence();
+        var message = messageUtils.getMessage("practice.exercise", exercise.getSentence());
         var buttonText = messageUtils.getMessage("practice.answer_button");
         var answerButton = inlineKeyboard(
                 row(button(buttonText, "answer"))
@@ -68,10 +68,10 @@ public class PracticeProcessor {
         bot.answer(message, chatId, answerButton);
     }
 
-    public void sendExercise(String username, Long chatId) {
+    public void sendExercise(Long telegramId, Long chatId) {
         var exercise = exerciseService.findAny();
 
-        var user = userService.findByUsername(username);
+        var user = userService.findByTelegramId(telegramId);
         user.setExercise(exercise);
         userService.save(user);
 

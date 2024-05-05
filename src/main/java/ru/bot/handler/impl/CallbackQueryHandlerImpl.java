@@ -28,12 +28,12 @@ public class CallbackQueryHandlerImpl implements CallbackQueryHandler {
         var callbackData = callbackQuery.getData();
         var chatId = callbackQuery.getMessage().getChatId();
         var messageId = callbackQuery.getMessage().getMessageId();
-        var username = callbackQuery.getFrom().getUserName();
+        var telegramId = callbackQuery.getFrom().getId();
 
         switch (callbackData) {
             case "menu" -> menuCallback(chatId, messageId);
-            case "practice" -> practiceCallback(username, chatId, messageId);
-            case "answer" -> answerCallback(username, chatId, messageId);
+            case "practice" -> practiceCallback(telegramId, chatId, messageId);
+            case "answer" -> answerCallback(telegramId, chatId, messageId);
         }
 
         if (callbackData.startsWith("tense")) {
@@ -55,15 +55,15 @@ public class CallbackQueryHandlerImpl implements CallbackQueryHandler {
         bot.editMessage(message, chatId, messageId, markup);
     }
 
-    private void practiceCallback(String username, Long chatId, Integer messageId) {
-        var user = userService.findByUsername(username);
+    private void practiceCallback(Long telegramId, Long chatId, Integer messageId) {
+        var user = userService.findByTelegramId(telegramId);
         user.setState(State.PRACTICE);
         userService.save(user);
 
         var message = messageUtils.getMessage("practice.start");
         bot.editMessage(message, chatId, messageId);
 
-        practiceProcessor.sendExercise(username, chatId);
+        practiceProcessor.sendExercise(telegramId, chatId);
     }
 
     private void tenseCallback(String tense, Long chatId, Integer messageId) {
@@ -99,8 +99,8 @@ public class CallbackQueryHandlerImpl implements CallbackQueryHandler {
     }
 
 
-    private void answerCallback(String username, Long chatId, Integer messageId) {
-        var exercise = userService.findByUsername(username).getExercise();
+    private void answerCallback(Long telegramId, Long chatId, Integer messageId) {
+        var exercise = userService.findByTelegramId(telegramId).getExercise();
         var sentence = exercise.getSentence();
         bot.answer(sentence, chatId);
 
@@ -108,6 +108,6 @@ public class CallbackQueryHandlerImpl implements CallbackQueryHandler {
         bot.answer(correctAnswer, chatId);
 
         bot.deleteMessage(chatId, messageId);
-        practiceProcessor.sendExercise(username, chatId);
+        practiceProcessor.sendExercise(telegramId, chatId);
     }
 }

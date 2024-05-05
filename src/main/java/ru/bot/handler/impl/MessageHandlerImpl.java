@@ -19,17 +19,17 @@ public class MessageHandlerImpl implements MessageHandler {
 
     @Override
     public void handle(Message message) {
-        var username = message.getFrom().getUserName();
+        var telegramId = message.getFrom().getId();
 
-        if (userService.existByUsername(username)) {
-            var user = userService.findByUsername(username);
+        if (userService.existByTelegramId(telegramId)) {
+            var user = userService.findByTelegramId(telegramId);
             switch (user.getState()) {
                 case COMMAND -> commandProcessor.process(message);
                 case PRACTICE -> practiceProcessor.process(message);
             }
         } else {
             var chatId = message.getChatId();
-            var user = new User(null, username, chatId, State.COMMAND, null);
+            var user = new User(null, telegramId, chatId, State.COMMAND, null);
             userService.save(user);
             commandProcessor.process(message);
         }

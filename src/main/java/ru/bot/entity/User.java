@@ -18,8 +18,8 @@ public class User {
     @Column(nullable = false)
     private Integer id;
 
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
+    @Column(name = "telegram_id", nullable = false, unique = true)
+    private Long telegramId;
 
     @Column(name = "chat_id", nullable = false, unique = true)
     private Long chatId;

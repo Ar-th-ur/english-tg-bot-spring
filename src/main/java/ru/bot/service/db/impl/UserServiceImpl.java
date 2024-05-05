@@ -11,9 +11,10 @@ import ru.bot.service.db.UserService;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+
     @Override
-    public boolean existByUsername(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean existByTelegramId(Long telegramId) {
+        return userRepository.existsByTelegramId(telegramId);
     }
 
     @Override
@@ -22,8 +23,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User findByTelegramId(Long telegramId) {
+        return userRepository.findByTelegramId(telegramId)
                 .orElseThrow();
     }
 }

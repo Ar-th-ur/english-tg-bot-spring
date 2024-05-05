@@ -5,9 +5,9 @@ import ru.bot.entity.User;
 
 public interface UserService {
 
-    boolean existByUsername(String username);
+    boolean existByTelegramId(Long telegramId);
 
     void save(User user);
 
-    User findByUsername(String username);
+    User findByTelegramId(Long telegramId);
 }
